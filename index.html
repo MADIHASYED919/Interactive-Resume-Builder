@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Resume Builder</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --main-bg: #f0f0f0;
+            --panel-bg: #ffffff;
+            --primary-color: #003c3c;
+            --tag-bg: #e0f2f1;
+            --tag-color: #00695c;
+            --text-primary: #000000;
+        }
+
+        body.dark-mode {
+            --main-bg: #121212;
+            --panel-bg: #1e1e1e;
+            --primary-color: #ffffff;
+            --tag-bg: #333333;
+            --tag-color: #90caf9;
+            color: white;
+            --text-primary: #ffffff;
+        }
+
+        body.template-blue {
+            --primary-color: #1e3a8a;
+            --tag-bg: #dbeafe;
+            --tag-color: #1d4ed8;
+        }
+
+        body.template-red {
+            --primary-color: #7f1d1d;
+            --tag-bg: #fee2e2;
+            --tag-color: #b91c1c;
+        }
+
+        body.template-green {
+            --primary-color: #1b5e20;
+            --tag-bg: #d0f8ce;
+            --tag-color: #2e7d32;
+        }
+
+        body.template-purple {
+            --primary-color: #4a148c;
+            --tag-bg: #f3e5f5;
+            --tag-color: #6a1b9a;
+        }
+
+        body.template-orange {
+            --primary-color: #e65100;
+            --tag-bg: #ffe0b2;
+            --tag-color: #ef6c00;
+        }
+
+        body.template-teal {
+            --primary-color: #00695c;
+            --tag-bg: #b2dfdb;
+            --tag-color: #00796b;
+        }
+
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--main-bg);
+            padding: 20px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .builder-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .form-panel,
+        .preview-panel {
+            flex: 1 1 48%;
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .cv-container {
+            display: flex;
+            flex-wrap: wrap;
+            background: var(--panel-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-panel {
+            background: var(--primary-color);
+            color: white;
+            flex: 1 1 35%;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .left-panel img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .right-panel {
+            flex: 1 1 65%;
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section h3 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            color: var(--text-primary)
+        }
+
+        .main-head {
+            text-align: center;
+            font-size: 50px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--tag-bg);
+            color: var(--tag-color);
+            padding: 6px 12px;
+            margin: 5px 5px 0 0;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .builder-container {
+                flex-direction: column;
+            }
+
+            .form-panel,
+            .preview-panel {
+                width: 100%;
+            }
+
+            .cv-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body class="template-default">
+    <div class="builder-container">
+        <div class="form-panel">
+            <h1 class="main-head"> Interactive Resume Builder</h1>
+            <label><input type="checkbox" id="darkModeToggle"> Enable Dark Mode</label>
+            <br><br>
+            <label for="template" style="color: #000000;font-size: 20px;"><b>Select Template:</b></label>
+            <select id="template">
+                <option value="template-default">Default</option>
+                <option value="template-blue">Blue</option>
+                <option value="template-red">Red</option>
+                <option value="template-green">Green</option>
+                <option value="template-purple">Purple</option>
+                <option value="template-orange">Orange</option>
+                <option value="template-teal">Teal</option>
+            </select>
+
+            <input type="file" id="photoInput" accept="image/*">
+            <input type="text" id="name" placeholder="Full Name" style="color: #000000; font-size:15px;">
+            <input type="text" id="title" placeholder="Job Title" style="color: #000000; font-size:15px;">
+            <input type="text" id="phone" placeholder="Phone Number" style="color: #000000; font-size:15px;">
+            <textarea id="about" placeholder="About You" style="color: #000000; font-size:15px;"></textarea>
+
+            <div class="section">
+                <h3>Education</h3>
+                <input type="text" id="edu10" placeholder="10th (School, Year)" style="color: #000000; font-size:15px;">
+                <input type="text" id="edu12" placeholder="Intermediate (College, Year)"
+                    style="color: #000000; font-size:15px;">
+                <input type="text" id="eduDegree" placeholder="Degree (College, Course, Year)"
+                    style="color: #000000; font-size:15px;">
+                <input type="text" id="eduPG" placeholder="Post-Graduation (optional)"
+                    style="color: #000000; font-size:15px;">
+            </div>
+
+            <div class="section">
+                <h3>Experience</h3>
+                <textarea id="experience" placeholder="Experience (comma separated)"
+                    style="color: #000000; font-size:15px;"></textarea>
+            </div>
+
+            <div class="section">
+                <h3>Skills</h3>
+                <input type="text" id="skills" placeholder="Skills (comma separated)"
+                    style="color: #000000; font-size:15px;">
+            </div>
+
+            <div class="section">
+                <h3>Achievements</h3>
+                <textarea id="achievements" placeholder="Achievements (comma separated)"
+                    style="color: #000000; font-size:15px;"></textarea>
+            </div>
+
+            <div class="section">
+                <h3>Projects</h3>
+                <textarea id="projects" placeholder="Projects (comma separated)"
+                    style="color: #000000; font-size:15px;"></textarea>
+            </div>
+            <button onclick="saveData()">Save Resume</button>
+            <button onclick="loadData()">Load Saved</button>
+            <button onclick="clearData()">Clear</button>
+        </div>
+
+        <div class="preview-panel" id="resumeContent">
+            <h2>Live Resume Preview</h2>
+            <div class="cv-container" id="cvToDownload">
+                <div class="left-panel">
+                    <img id="previewPhoto" style="display:none;">
+                    <h2 id="previewName">Your Name</h2>
+                    <p id="previewTitle">Job Title</p>
+                    <p id="previewPhone"></p>
+                    <div class="section">
+                        <h2>About</h2>
+                        <p id="previewAbout"></p>
+                    </div>
+                    <div class="section">
+                        <h2>Skills</h2>
+                        <div id="previewSkills"></div>
+                    </div>
+                </div>
+                <div class="right-panel">
+                    <div class="section">
+                        <h3>Achievements</h3>
+                        <ul id="previewAchievements"></ul>
+                    </div>
+                    <div class="section">
+                        <h3>Education</h3>
+                        <ul id="previewEducation">
+                            <li id="preview_edu10"></li>
+                            <li id="preview_edu12"></li>
+                            <li id="preview_eduDegree"></li>
+                            <li id="preview_eduPG"></li>
+                        </ul>
+                    </div>
+                    <div class="section">
+                        <h3>Experience</h3>
+                        <ul id="previewExperience"></ul>
+                    </div>
+                    <div class="section">
+                        <h3>Projects</h3>
+                        <ul id="previewProjects"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function updateText(inputId, previewId, defaultText = '') {
+            document.getElementById(inputId).addEventListener('input', () => {
+                const value = document.getElementById(inputId).value.trim();
+                document.getElementById(previewId).textContent = value || defaultText;
+            });
+        }
+
+        updateText('name', 'previewName', 'Your Name');
+        updateText('title', 'previewTitle', 'Job Title');
+        updateText('about', 'previewAbout', '');
+        updateText('phone', 'previewPhone', '');
+
+        document.getElementById('skills').addEventListener('input', function () {
+            const skills = this.value.split(',');
+            const preview = document.getElementById('previewSkills');
+            preview.innerHTML = '';
+            skills.forEach(skill => {
+                if (skill.trim()) {
+                    const tag = document.createElement('span');
+                    tag.className = 'tag';
+                    tag.textContent = skill.trim();
+                    preview.appendChild(tag);
+                }
+            });
+        });
+
+        const listFields = ['achievements', 'experience', 'projects'];
+        listFields.forEach(field => {
+            document.getElementById(field).addEventListener('input', function () {
+                const items = this.value.split(',');
+                const preview = document.getElementById('preview' + field.charAt(0).toUpperCase() + field.slice(1));
+                preview.innerHTML = '';
+                items.forEach(item => {
+                    if (item.trim()) {
+                        const li = document.createElement('li');
+                        li.textContent = item.trim();
+                        preview.appendChild(li);
+                    }
+                });
+            });
+        });
+
+        ['edu10', 'edu12', 'eduDegree', 'eduPG'].forEach(id => {
+            document.getElementById(id).addEventListener('input', function () {
+                const value = this.value.trim();
+                document.getElementById('preview_' + id).textContent = value;
+            });
+        });
+
+        document.getElementById('photoInput').addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.getElementById('previewPhoto');
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('template').addEventListener('change', function () {
+            document.body.classList.remove(
+                'template-default',
+                'template-blue',
+                'template-red',
+                'template-green',
+                'template-purple',
+                'template-orange',
+                'template-teal'
+            );
+            document.body.classList.add(this.value);
+        });
+
+
+        document.getElementById('darkModeToggle').addEventListener('change', function () {
+            document.body.classList.toggle('dark-mode');
+        });
+ 
+        function saveData() {
+            const formFields = ['name', 'title', 'phone', 'about', 'skills', 'achievements', 'experience', 'projects', 'edu10', 'edu12', 'eduDegree', 'eduPG'];
+            const data = {};
+            formFields.forEach(id => data[id] = document.getElementById(id).value);
+            localStorage.setItem('resumeData', JSON.stringify(data));
+            alert('Resume saved locally!');
+        }
+
+        function loadData() {
+            try {
+                const data = JSON.parse(localStorage.getItem('resumeData'));
+                if (!data) return alert('No saved resume found.');
+                for (let id in data) {
+                    document.getElementById(id).value = data[id];
+                    document.getElementById(id).dispatchEvent(new Event('input'));
+                }
+            } catch (e) {
+                alert("Failed to load resume. Data might be corrupted.");
+            }
+        }
+        function clearData() {
+            if (confirm("Are you sure you want to clear everything?")) {
+                location.reload();
+            }
+        }
+    </script>
+</body>
+
+</html>
